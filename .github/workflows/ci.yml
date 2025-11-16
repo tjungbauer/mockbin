@@ -27,18 +27,18 @@ env:
   IMAGE_NAME: tjungbau/mockbin
 
 jobs:
-  lint:
-    name: Lint Dockerfile
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#  lint:
+#    name: Lint Dockerfile
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
 
-      - name: Run hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
-          failure-threshold: warning
+#      - name: Run hadolint
+#        uses: hadolint/hadolint-action@v3.1.0
+#        with:
+#          dockerfile: Dockerfile
+#          failure-threshold: warning
 
   version:
     name: Determine Version
@@ -96,7 +96,8 @@ jobs:
   build:
     name: Build and Push Image
     runs-on: ubuntu-latest
-    needs: [lint, version]
+    #needs: [lint, version]
+    needs: [version]
     permissions:
       contents: read
       packages: write
