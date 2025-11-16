@@ -1,0 +1,32 @@
+---
+# Alternative to Route for standard Kubernetes clusters
+# Uncomment and configure if not using OpenShift
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mockbin
+  labels:
+    app: mockbin
+    app.kubernetes.io/name: mockbin
+    app.kubernetes.io/component: api
+  annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx  # Change based on your ingress controller
+  rules:
+  - host: mockbin.example.com  # Change to your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mockbin
+            port:
+              name: http
+  # tls:
+  # - hosts:
+  #   - mockbin.example.com
+  #   secretName: mockbin-tls
+

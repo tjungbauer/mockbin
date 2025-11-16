@@ -58,7 +58,7 @@ def measure(func):
     @wraps(func)
     def measure(req):
         with tracer.start_as_current_span(
-            "measure", kind=trace.SpanKind.SERVER
+            "measure request", kind=trace.SpanKind.SERVER
         ) as span:
             btime = time()
             rsp = func(req)

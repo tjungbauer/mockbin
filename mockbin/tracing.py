@@ -6,6 +6,7 @@ __all__ = [
     "params_to_trace",
     "TraceContextTextMapPropagator",
     "Context",
+    "get_traceparent",
 ]
 import logging
 import os
@@ -38,6 +39,9 @@ from opentelemetry.sdk.trace.export import (
 from opentelemetry.trace import NonRecordingSpan, Span, SpanContext, TraceFlags
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from opentelemetry.trace.status import StatusCode
+from collections import namedtuple
+
+traceparent = namedtuple("Traceparent", ["ctx", "header", "traceid", "xb3"])
 
 texporter = grpcOTLPSpanExporter(
     endpoint=os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317"),
@@ -50,6 +54,16 @@ NAMESPACE = os.environ.get("NAMESPACE", "prompolicy")
 
 def get_tracecontext(custom: str = False, headers: dict = {}) -> Context:
     def create_random():
+        if headers.get("x-b3-traceid", False) is not False:
+            return (
+                f"00-{headers.get('x-b3-traceid')}-{headers.get('x-b3-spanid')}-"
+                + f"{headers.get('x-b3-sampled')}"
+            )
+        else:
+            return (
+                f"00-{headers.get('x-b3-traceid')}-{headers.get('x-b3-spanid')}-"
+                + f"{headers.get('x-b3-sampled')}"
+            )
         while True:
             span_id = hex(idg.RandomIdGenerator().generate_span_id())
             if len(span_id) == 18:
@@ -68,6 +82,26 @@ def get_tracecontext(custom: str = False, headers: dict = {}) -> Context:
         ctx = context.get_current()
     return ctx
 
+def get_traceparent(_ctx):
+    try:
+        span = _ctx.get(list(_ctx)[0]).get_span_context()
+    except:
+        span = _ctx
+    try:
+        traceid = hex(span.trace_id)[2:]
+        spanid = hex(span.span_id)[2:]
+        flags = hex(span.trace_flags)[2:]
+        tp = f"00-{traceid}-{spanid}-0{flags}"
+        xb3 = {
+            "x-b3-traceid": traceid,
+            "x-b3-parentspanid": spanid,
+            "x-b3-spanid": spanid,
+            "x-b3-sampled": f"0{flags}",
+        }
+
+    except:
+        tp, traceid, xb3 = "", "", ""
+    return traceparent(_ctx, tp, traceid, xb3)
 
 def params_to_trace(reqparams: Dict = {}) -> Dict:
     params = {}

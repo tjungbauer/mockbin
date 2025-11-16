@@ -4,9 +4,6 @@ import socket
 from collections import defaultdict
 from functools import wraps
 
-import rfc5424logging
-from rfc5424logging import Rfc5424SysLogHandler
-
 from .tracing import *
 
 from opentelemetry._logs import set_logger_provider
@@ -32,7 +29,13 @@ logger_provider = LoggerProvider(
 )
 set_logger_provider(logger_provider)
 
-exporter = OTLPLogExporter(insecure=True)
+exporter = OTLPLogExporter(
+    endpoint=os.environ.get(
+        "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT",
+        os.environ.get("OTEL_EXPOTER_OTLP_ENDPOINT", "http://127.0.0.1:4317"),
+    ),
+    insecure=True,
+)
 logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
 handler = LoggingHandler(level=logging.NOTSET, logger_provider=logger_provider)
 
@@ -48,16 +51,6 @@ logging.basicConfig(
 
 levels = defaultdict(bool)
 
-syslog = Rfc5424SysLogHandler(
-    address=("127.0.0.1", 50514),
-    socktype=socket.SOCK_DGRAM,
-    facility=rfc5424logging.LOG_DAEMON,
-    hostname=socket.gethostname(),
-    appname="prompolicy",
-    procid=os.getpid(),
-)
-
-syslog.setLevel(logging.DEBUG)
 tracer = trace.get_tracer("proxy")
 
 try:
@@ -72,12 +65,14 @@ class FilteredLogger(object):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(baselevel)
         self.levels = levels
-        self.logger.addHandler(syslog)
         self.logger.addHandler(handler)
         # initialize default level
         self.levels[0] = True
 
     def enhance(self, message: str, _ctx=None) -> str:
+        return message
+        # for none OTEL log aware, add the traceparent to the message if required
+        # this method was used before OTLP logging got stable
         try:
             traceparent = f"00-{hex(_ctx.trace_id)[2:]}-{hex(_ctx.span_id)[2:]}-01"
         except Exception as perr:

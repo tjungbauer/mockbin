@@ -1,0 +1,55 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mockbin
+  labels:
+    app: mockbin
+    app.kubernetes.io/name: mockbin
+spec:
+  podSelector:
+    matchLabels:
+      app: mockbin
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from OpenShift ingress/router
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          network.openshift.io/policy-group: ingress
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow traffic from within the same namespace (for service mesh, monitoring, etc.)
+  - from:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: openshift-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow outbound HTTPS (for external APIs if needed)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+  # Allow access to Kubernetes API
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          app: openshift-kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 443
+

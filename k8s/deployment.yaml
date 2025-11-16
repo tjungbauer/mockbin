@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mockbin
+  labels:
+    app: mockbin
+    app.kubernetes.io/name: mockbin
+    app.kubernetes.io/component: api
+    app.openshift.io/runtime: python
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mockbin
+  template:
+    metadata:
+      labels:
+        app: mockbin
+        app.kubernetes.io/name: mockbin
+        app.kubernetes.io/component: api
+        deployment: mockbin
+      annotations:
+        alpha.image.policy.openshift.io/resolve-names: '*'
+    spec:
+      serviceAccountName: mockbin
+      containers:
+      - name: mockbin
+        image: quay.io/tjungbau/mockbin:1.7.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+

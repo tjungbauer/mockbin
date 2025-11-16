@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: mockbin
+
+namespace: mockbin
+
+commonLabels:
+  app.kubernetes.io/name: mockbin
+  app.kubernetes.io/instance: mockbin
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/managed-by: kustomize
+
+resources:
+  # Core resources
+  - namespace.yaml
+  - serviceaccount.yaml
+  - deployment.yaml
+  - service.yaml
+  
+  # OpenShift resources
+  - route.yaml
+  
+  # Optional: Uncomment for standard Kubernetes (not OpenShift)
+  # - ingress.yaml
+  
+  # High availability & scaling
+  - hpa.yaml
+  
+  # Security
+  - networkpolicy.yaml
+
+images:
+  - name: quay.io/tjungbau/mockbin
+    newTag: 1.7.0
+

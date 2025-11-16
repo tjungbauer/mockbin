@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mockbin
+  labels:
+    app.kubernetes.io/name: mockbin
+  annotations:
+    openshift.io/display-name: "Mockbin API"
+    openshift.io/description: "Mockbin HTTP request/response testing service"
+
