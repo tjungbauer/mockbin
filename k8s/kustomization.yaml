@@ -34,5 +34,5 @@ resources:
 
 images:
   - name: quay.io/tjungbau/mockbin
-    newTag: 1.7.0
+    newTag: 1.8.0
 
