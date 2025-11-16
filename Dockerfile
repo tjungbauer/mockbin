@@ -1,8 +1,12 @@
 # syntax=docker/dockerfile:1
 # Use PUBLIC Red Hat UBI registry (no authentication required)
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi10/ubi:latest
+# hadolint ignore=DL3029
+# Platform flag required for cross-compilation from ARM (Mac M-series) to x86_64
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi10/ubi:10.1
 
 # Install Python runtime and pip
+# hadolint ignore=DL3041
+# Version pinning not practical for UBI packages - base image version controls package versions
 RUN dnf -y install --setopt=install_weak_deps=0 --nodocs \
       python3.12 \
       python3.12-pip && \
@@ -10,7 +14,7 @@ RUN dnf -y install --setopt=install_weak_deps=0 --nodocs \
 
 # Install Python packages
 COPY requirements.txt /tmp/requirements.txt
-RUN python3.12 -m pip install -r /tmp/requirements.txt && \
+RUN python3.12 -m pip install --no-cache-dir -r /tmp/requirements.txt && \
     rm -rf /root/.cache/pip
 
 # Copy application code
