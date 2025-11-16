@@ -26,7 +26,7 @@ spec:
       serviceAccountName: mockbin
       containers:
       - name: mockbin
-        image: quay.io/tjungbau/mockbin:1.8.0
+        image: quay.io/tjungbau/mockbin:1.8.1
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
