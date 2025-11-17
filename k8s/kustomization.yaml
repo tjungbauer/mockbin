@@ -7,11 +7,11 @@ metadata:
 
 namespace: mockbin
 
-commonLabels:
-  app.kubernetes.io/name: mockbin
-  app.kubernetes.io/instance: mockbin
-  app.kubernetes.io/version: "1.0.0"
-  app.kubernetes.io/managed-by: kustomize
+#commonLabels:
+#  app.kubernetes.io/name: mockbin
+#  app.kubernetes.io/instance: mockbin
+#  app.kubernetes.io/version: "1.0.0"
+#  app.kubernetes.io/managed-by: kustomize
 
 resources:
   # Core resources
