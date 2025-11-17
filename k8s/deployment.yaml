@@ -17,9 +17,6 @@ spec:
     metadata:
       labels:
         app: mockbin
-        app.kubernetes.io/name: mockbin
-        app.kubernetes.io/component: api
-        deployment: mockbin
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'
     spec:
