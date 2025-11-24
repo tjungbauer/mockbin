@@ -5,17 +5,11 @@ kind: Kustomization
 metadata:
   name: mockbin
 
-namespace: mockbin
-
-#commonLabels:
-#  app.kubernetes.io/name: mockbin
-#  app.kubernetes.io/instance: mockbin
-#  app.kubernetes.io/version: "1.0.0"
-#  app.kubernetes.io/managed-by: kustomize
+# namespace: mockbin
 
 resources:
   # Core resources
-  - namespace.yaml
+  # - namespace.yaml
   - serviceaccount.yaml
   - deployment.yaml
   - service.yaml
@@ -27,10 +21,10 @@ resources:
   # - ingress.yaml
   
   # High availability & scaling
-  - hpa.yaml
+  # - hpa.yaml
   
   # Security
-  - networkpolicy.yaml
+  # - networkpolicy.yaml
 
 images:
   - name: quay.io/tjungbau/mockbin
