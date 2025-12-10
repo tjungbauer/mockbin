@@ -28,5 +28,5 @@ resources:
 
 images:
   - name: quay.io/tjungbau/mockbin
-    newTag: 1.8.1
+    newTag: 1.8.1@sha256:29779b47ff46cecfd4d428154a14bed3264ef1f873d07271c1e65ce0d85c8ef4
 
