@@ -2,7 +2,7 @@
 # Use PUBLIC Red Hat UBI registry (no authentication required)
 # hadolint ignore=DL3029
 # Platform flag required for cross-compilation from ARM (Mac M-series) to x86_64
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi10/ubi:10.1-1766033862@sha256:4fa402808c6dfbbb409182736ee205d774a2fa1f6f18bb9982a3f285035a8f01
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi10/ubi:10.1-1769662757@sha256:64b34b13c0dda61ed9b977bde8068eb0d350f4afb75142715e83be68373e4848
 
 # Install Python runtime and pip
 # hadolint ignore=DL3041
