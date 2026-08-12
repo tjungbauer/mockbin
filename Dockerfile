@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
+# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 # Use PUBLIC Red Hat UBI registry (no authentication required)
 # hadolint ignore=DL3029
 # Platform flag required for cross-compilation from ARM (Mac M-series) to x86_64
